@@ -54,3 +54,7 @@ struct SEQ3Widget : ModuleWidget {
 	SEQ3Widget();
 	Menu *createContextMenu();
 };
+
+struct SEQEuclidWidget : ModuleWidget {
+	SEQEuclidWidget();
+};

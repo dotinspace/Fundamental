@@ -19,4 +19,5 @@ void init(rack::Plugin *p) {
 	createModel<VCMixerWidget>(plugin, "VCMixer", "VC Mixer");
 	createModel<ScopeWidget>(plugin, "Scope", "Scope");
 	createModel<SEQ3Widget>(plugin, "SEQ3", "SEQ-3");
+	createModel<SEQEuclidWidget>(plugin, "SEQE", "SEQ-Euclid");
 }

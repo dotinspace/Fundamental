@@ -1,6 +1,8 @@
 # MrLumps VCV Modules (MacOS)
 This is a fork of [MrLumps](https://github.com/MrLumps) 'Fundamental' repo, and has been changed so that it ends up as a plugin called MrLumps for use in [VCV Rack](vcvrack.com), with both the euclidean sequencer and VCS modules.
 
+All credit is due to MrLumps, I merely tidied up a bit.
+
 ## Building
 This has been built against vcvrack 0.4.0. on MacOS.
 

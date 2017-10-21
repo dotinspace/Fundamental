@@ -37,7 +37,7 @@ struct VCS1x8 : Module {
 	}
 
 	// Called via menu
-	void initialize() {
+	void reset() {
 		for (int c = 0; c < 8; c++) {
 			outputLights[c] = 0.0f;
 			outputs[c].value = 0.0f;
@@ -179,7 +179,7 @@ struct VCS2x4 : Module {
 	}
 
 	// Called via menu
-	void initialize() {
+	void reset() {
 		for (int c = 0; c < 4; c++) {
 			outputLights[c] = 0.0f;   // Left
 			outputLights[c+4] = 0.0f; // Right

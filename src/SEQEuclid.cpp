@@ -180,7 +180,7 @@ struct SEQEuclid : Module {
   }
 
   // Called via menu
-  void initialize() {
+  void reset() {
     time = 0.0;
     dTime = 1.0 / static_cast<double>(gSampleRate);
     bpm = 120;

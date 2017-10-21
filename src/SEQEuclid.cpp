@@ -165,7 +165,7 @@ struct SEQEuclid : Module {
   Bank bank4;
 
   double time = 0.0;
-  double dTime = 1.0 / static_cast<double>(gSampleRate);
+  double dTime = 1.0 / static_cast<double>(engineGetSampleRate());
   int bpm = 120;
   double timerLength = 1.0 / (static_cast<double>(bpm) / 60.0);
   double timerTime = timerLength;
@@ -182,7 +182,7 @@ struct SEQEuclid : Module {
   // Called via menu
   void reset() {
     time = 0.0;
-    dTime = 1.0 / static_cast<double>(gSampleRate);
+    dTime = 1.0 / static_cast<double>(engineGetSampleRate());
     bpm = 120;
     timerLength = 1.0 / (static_cast<double>(bpm) / 60.0);
     timerTime = timerLength;

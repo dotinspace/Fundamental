@@ -1,3 +1,5 @@
+<img src="https://github.com/djpeterso23662/MrLumps/blob/master/res/MrLumps_Family.jpg" width="100%">
+
 MrLumps VCV Modules
 ===================
 

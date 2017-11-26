@@ -21,29 +21,27 @@ struct VCS1x8 : Module {
 		SWITCHED_OUTPUT,
 		NUM_OUTPUTS = SWITCHED_OUTPUT + 8
 	};
+	enum LightIds {
+		OUTPUT_LIGHTS,
+		NUM_LIGHTS = OUTPUT_LIGHTS + 8
+	};
 
 	SchmittTrigger inputTrigger;
 	int currentSwitch;
 
-	// Lights
-	float outputLights[8];
-
-	VCS1x8() {
-			params.resize(NUM_PARAMS);
-			inputs.resize(NUM_INPUTS);
-			outputs.resize(NUM_OUTPUTS);
-			currentSwitch = 0;
-			outputLights[currentSwitch] = 10.0f;
+	VCS1x8() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
+		currentSwitch = 0;
+		lights[OUTPUT_LIGHTS + currentSwitch].value = 10.0f;
 	}
 
 	// Called via menu
 	void reset() {
 		for (int c = 0; c < 8; c++) {
-			outputLights[c] = 0.0f;
+			lights[OUTPUT_LIGHTS + c].value = 0.0f;
 			outputs[c].value = 0.0f;
 		}
 		currentSwitch = 0;
-		outputLights[currentSwitch] = 10.0f;
+		lights[OUTPUT_LIGHTS + currentSwitch].value = 10.0f;
 	}
 
 	//Todo
@@ -65,9 +63,9 @@ void VCS1x8::step() {
 			//Search forward from the current switch
 			for (int i = currentSwitch+1; i < NUM_OUTPUTS; i++) {
 				if (outputs[i].active) {
-					outputLights[currentSwitch] = 0.0f;
+					lights[OUTPUT_LIGHTS + currentSwitch].value = 0.0f;
 					outputs[currentSwitch].value = 0.0f;
-					outputLights[i] = 10.0f;
+					lights[OUTPUT_LIGHTS + i].value = 10.0f;
 					currentSwitch = i;
 					goto OUTPUT;
 				}
@@ -75,9 +73,9 @@ void VCS1x8::step() {
 			//Else wrap around
 			for (int i = 0; i < currentSwitch; i++) {
 				if (outputs[i].active) {
-					outputLights[currentSwitch] = 0.0f;
+					lights[OUTPUT_LIGHTS + currentSwitch].value = 0.0f;
 					outputs[currentSwitch].value = 0.0f;
-					outputLights[i] = 10.0f;
+					lights[OUTPUT_LIGHTS + i].value = 10.0f;
 					currentSwitch = i;
 					goto OUTPUT;
 				}
@@ -125,7 +123,7 @@ OUTPUT:
 
 		//Switched ouputs + lights
 		for (int outputs = 0; outputs < 8; outputs++) {
-			addChild(createValueLight<SmallLight<RedValueLight>>(Vec(bankX[outputs] + 9, bankY[outputs] - 12), &module->outputLights[outputs]));
+			addChild(createLight<SmallLight<RedLight>>(Vec(bankX[outputs] + 9, bankY[outputs] - 12), module, VCS1x8::OUTPUT_LIGHTS + outputs));
 			addOutput(createOutput<PJ301MPort>(Vec(bankX[outputs], bankY[outputs]), module, VCS1x8::SWITCHED_OUTPUT + outputs));
 		}
 
@@ -159,37 +157,34 @@ struct VCS2x4 : Module {
 		SWITCHED_OUTPUT_R4,
 		NUM_OUTPUTS
 	};
+	enum LightIds {
+		OUTPUT_LIGHTS,
+		NUM_LIGHTS = OUTPUT_LIGHTS + 8
+	};
 
 	SchmittTrigger inputTrigger;
 	int currentSwitchL;
 	int currentSwitchR;
 
-	// Lights
-	float outputLights[8];
-
-
-	VCS2x4() {
-		params.resize(NUM_PARAMS);
-		inputs.resize(NUM_INPUTS);
-		outputs.resize(NUM_OUTPUTS);
+	VCS2x4() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
 		currentSwitchL = 0;
 		currentSwitchR = SWITCHED_OUTPUT_R;
-		outputLights[currentSwitchL] = 10.0f;
-		outputLights[currentSwitchR] = 10.0f;
+		lights[OUTPUT_LIGHTS + currentSwitchL].value = 10.0f;
+		lights[OUTPUT_LIGHTS + currentSwitchR].value = 10.0f;	
 	}
 
 	// Called via menu
 	void reset() {
 		for (int c = 0; c < 4; c++) {
-			outputLights[c] = 0.0f;   // Left
-			outputLights[c+4] = 0.0f; // Right
+			lights[OUTPUT_LIGHTS + c].value = 0.0f;   // Left
+			lights[OUTPUT_LIGHTS + c+4].value = 0.0f; // Right	
 		}
 		outputs[currentSwitchL].value = 0.0f;
 		outputs[currentSwitchR].value = 0.0f;
 		currentSwitchL = 0;
 		currentSwitchR = SWITCHED_OUTPUT_R;
-		outputLights[currentSwitchL] = 10.0f;
-		outputLights[currentSwitchR] = 10.0f;
+		lights[OUTPUT_LIGHTS + currentSwitchL].value = 10.0f;
+		lights[OUTPUT_LIGHTS + currentSwitchR].value = 10.0f;	
 	}
 
 	//Todo
@@ -214,9 +209,9 @@ void VCS2x4::step() {
 				//Search forward from the current switch
 				for (int i = currentSwitchL + 1; i < NUM_OUTPUTS/2; i++) {
 					if (outputs[i].active) {
-						outputLights[currentSwitchL] = 0.0f;
+						lights[OUTPUT_LIGHTS + currentSwitchL].value = 0.0f;
 						outputs[currentSwitchL].value = 0.0f;
-						outputLights[i] = 10.0f;
+						lights[OUTPUT_LIGHTS + i].value = 10.0f;
 						currentSwitchL = i;
 						goto NEXTSIDE;
 					}
@@ -224,9 +219,9 @@ void VCS2x4::step() {
 				//Else wrap around
 				for (int i = SWITCHED_OUTPUT_L; i < currentSwitchL; i++) {
 					if (outputs[i].active) {
-						outputLights[currentSwitchL] = 0.0f;
+						lights[OUTPUT_LIGHTS + currentSwitchL].value = 0.0f;
 						outputs[currentSwitchL].value = 0.0f;
-						outputLights[i] = 10.0f;
+						lights[OUTPUT_LIGHTS + i].value = 10.0f;
 						currentSwitchL = i;
 						goto NEXTSIDE;
 					}
@@ -239,9 +234,9 @@ void VCS2x4::step() {
 				//Search forward from the current switch
 				for (int i = currentSwitchR + 1; i < NUM_OUTPUTS; i++) {
 					if (outputs[i].active) {
-						outputLights[currentSwitchR] = 0.0f;
+						lights[OUTPUT_LIGHTS + currentSwitchR].value = 0.0f;
 						outputs[currentSwitchR].value = 0.0f;
-						outputLights[i] = 10.0f;
+						lights[OUTPUT_LIGHTS + i].value = 10.0f;
 						currentSwitchR = i;
 						goto OUTPUT;
 					}
@@ -249,9 +244,9 @@ void VCS2x4::step() {
 				//Else wrap around
 				for (int i = SWITCHED_OUTPUT_R; i < currentSwitchR; i++) {
 					if (outputs[i].active) {
-						outputLights[currentSwitchR] = 0.0f;
+						lights[OUTPUT_LIGHTS + currentSwitchR].value = 0.0f;
 						outputs[currentSwitchR].value = 0.0f;
-						outputLights[i] = 10.0f;
+						lights[OUTPUT_LIGHTS + i].value = 10.0f;
 						currentSwitchR = i;
 						goto OUTPUT;
 					}
@@ -308,10 +303,10 @@ VCS2x4Widget::VCS2x4Widget() {
 
 	//Switched ouputs + lights
 	for (int outputs = 0; outputs < 4; outputs++) {
-		addChild(createValueLight<SmallLight<RedValueLight>>(Vec(bankX[0] + 9, bankY[outputs] - 12), &module->outputLights[outputs]));
+		addChild(createLight<SmallLight<RedLight>>(Vec(bankX[0] + 9, bankY[outputs] - 12), module, VCS2x4::OUTPUT_LIGHTS + outputs));
 		addOutput(createOutput<PJ301MPort>(Vec(bankX[0], bankY[outputs]), module, VCS2x4::SWITCHED_OUTPUT_L + outputs));
 
-		addChild(createValueLight<SmallLight<RedValueLight>>(Vec(bankX[1] + 9, bankY[outputs] - 12), &module->outputLights[outputs+4]));
+		addChild(createLight<SmallLight<RedLight>>(Vec(bankX[1] + 9, bankY[outputs] - 12), module, VCS2x4::OUTPUT_LIGHTS + outputs+4));
 		addOutput(createOutput<PJ301MPort>(Vec(bankX[1], bankY[outputs]), module, VCS2x4::SWITCHED_OUTPUT_R + outputs));
 	}
 

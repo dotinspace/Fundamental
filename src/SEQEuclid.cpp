@@ -3,8 +3,6 @@
 #include <string>
 #include <memory>
 
-//Change to suit wherever you place this
-//#include "Fundamental.hpp"
 #include "MrLumps.hpp"
 #include "dsp/digital.hpp"
 
@@ -56,6 +54,10 @@ struct SEQEuclid : Module {
     TRIGGER4_OUTPUT,
     NUM_OUTPUTS
   };
+	enum LightIds {
+		GATES_LIGHT,
+		NUM_LIGHTS
+	};
 
   // LCG see numerical recipies and wikipedia
   // The std random engine seems inapropreate for this application
@@ -170,14 +172,7 @@ struct SEQEuclid : Module {
   double timerLength = 1.0 / (static_cast<double>(bpm) / 60.0);
   double timerTime = timerLength;
 
-  // Lights
-  float gatesLight = 0.0;
-
-  SEQEuclid() {
-      params.resize(NUM_PARAMS);
-      inputs.resize(NUM_INPUTS);
-      outputs.resize(NUM_OUTPUTS);
-  }
+  SEQEuclid() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {}
 
   // Called via menu
   void reset() {
@@ -334,7 +329,7 @@ void SEQEuclid::step() {
   const float triggerOr = (trigger1 || trigger2 || trigger3 || trigger4) ? 10.0f : 0.0f;
 
   // Send outputs out
-  gatesLight = (gateOr >= 1.0f) ? 1.0 : 0.0;
+  lights[GATES_LIGHT].value = (gateOr >= 1.0f) ? 1.0 : 0.0;
 
   outputs[GATE1_OUTPUT].value = gate1;
   outputs[GATE2_OUTPUT].value = gate2;
@@ -504,7 +499,7 @@ SEQEuclidWidget::SEQEuclidWidget() {
 
   addOutput(createOutput<PJ301MPort>(Vec(bankX[5], bankY[6] + 8), module, SEQEuclid::GATE_OR_OUTPUT));
   addOutput(createOutput<PJ301MPort>(Vec(bankX[6], bankY[6] + 8), module, SEQEuclid::TRIGGER_OR_OUTPUT));
-  addChild(createValueLight<SmallLight<RedValueLight>>(Vec(bankX[7]+4, bankY[6] + 16), &module->gatesLight));
+  addChild(createLight<SmallLight<RedLight>>(Vec(bankX[7]+4, bankY[6] + 16), module, SEQEuclid::GATES_LIGHT));
 
   // Make sure it stays put
 

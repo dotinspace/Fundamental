@@ -52,7 +52,7 @@ with 100101001010.
 If fill is greater than length the sequencer will output nothing but beats at
 the given BPM eg 1111111....
 
-You can make things more interesting by using the probabilty and jog controls.
+You can make things more interesting by using the probability and jog controls.
 The probably knob at far right will allow all beats to pass, at 12 noon 50% of
 beats and far left 0 beats. The jog control will allow you to step that bank's
 pattern forward by one step to allow you to offset patterns.
